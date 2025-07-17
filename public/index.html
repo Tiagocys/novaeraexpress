@@ -1,11 +1,475 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Nova Era Express</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .category-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        .cart-item:hover {
+            background-color: #f8fafc;
+        }
+    </style>
 </head>
-<body>
-    <h1>Alo Homora</h1>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <h1 class="text-2xl font-bold">Nova Era Express</h1>
+            </div>
+            <div class="relative">
+                <button id="cart-btn" class="flex items-center space-x-1 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg transition">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                    <span>itens</span>
+                </button>
+                <div id="cart-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-10 border border-gray-200">
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-800 border-b pb-2">Seu Pedido</h3>
+                        <div id="cart-items" class="max-h-60 overflow-y-auto py-2">
+                            <p class="text-gray-500 text-center py-4">Seu carrinho está vazio</p>
+                        </div>
+                        <div id="cart-total" class="border-t pt-3 hidden">
+                            <div class="flex justify-between font-bold text-gray-800">
+                                <span>Total:</span>
+                                <span id="total-price">R$ 0,00</span>
+                            </div>
+                            <button class="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
+                                Finalizar Pedido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Categories Sidebar -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow p-4 sticky top-4">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Categorias</h2>
+                    <div class="space-y-2">
+                        <button class="category-btn w-full text-left px-4 py-2 rounded-lg transition active" data-category="all">
+                            <i class="fas fa-list mr-2"></i>Todos os Itens
+                        </button>
+                        <button class="category-btn w-full text-left px-4 py-2 rounded-lg transition" data-category="clothes">
+                            <i class="fas fa-tshirt mr-2"></i>Roupas
+                        </button>
+                        <button class="category-btn w-full text-left px-4 py-2 rounded-lg transition" data-category="bed">
+                            <i class="fas fa-bed mr-2"></i>Cama
+                        </button>
+                        <button class="category-btn w-full text-left px-4 py-2 rounded-lg transition" data-category="bath">
+                            <i class="fas fa-bath mr-2"></i>Banho
+                        </button>
+                        <button class="category-btn w-full text-left px-4 py-2 rounded-lg transition" data-category="table">
+                            <i class="fas fa-utensils mr-2"></i>Mesa
+                        </button>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="font-bold text-gray-800 mb-2">Filtros</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="express" class="mr-2">
+                                <label for="express">Lavagem Expressa</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="eco" class="mr-2">
+                                <label for="eco">Lavagem Ecológica</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Grid -->
+            <div class="lg:w-3/4">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Nossos Serviços</h2>
+                    <p class="text-gray-600">Selecione as peças que deseja lavar</p>
+                </div>
+
+                <!-- Subcategories -->
+                <div class="mb-6 overflow-x-auto">
+                    <div class="flex space-x-2 pb-2">
+                        <button class="subcategory-btn px-4 py-2 bg-blue-100 text-blue-800 rounded-full whitespace-nowrap active" data-subcategory="all">Todos</button>
+                        <button class="subcategory-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full whitespace-nowrap" data-subcategory="shirts">Camisas</button>
+                        <button class="subcategory-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full whitespace-nowrap" data-subcategory="pants">Calças</button>
+                        <button class="subcategory-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full whitespace-nowrap" data-subcategory="sheets">Lençóis</button>
+                        <button class="subcategory-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full whitespace-nowrap" data-subcategory="towels">Toalhas</button>
+                        <button class="subcategory-btn px-4 py-2 bg-gray-100 text-gray-800 rounded-full whitespace-nowrap" data-subcategory="tablecloth">Toalhas de Mesa</button>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="mb-6 relative">
+                    <input type="text" placeholder="Buscar peças..." class="w-full px-4 py-2 border border-gray-300 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+
+                <!-- Items Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="items-grid">
+                    <!-- Items will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Nova Era Express</h3>
+                    <p class="text-gray-300">Sua lavanderia online 24 horas. Serviço rápido, prático e de qualidade.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contato</h3>
+                    <p class="text-gray-300"><i class="fas fa-phone mr-2"></i> (11) 99999-9999</p>
+                    <p class="text-gray-300"><i class="fas fa-envelope mr-2"></i> contato@lavaja.com</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Redes Sociais</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-gray-300 hover:text-white"><i class="fab fa-whatsapp text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Nova Era Express. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample data for laundry items
+        const laundryItems = [
+            {
+                id: 1,
+                name: "Camisa Social",
+                category: "clothes",
+                subcategory: "shirts",
+                price: 12.90,
+                image: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem e passagem de camisa social"
+            },
+            {
+                id: 2,
+                name: "Camiseta Básica",
+                category: "clothes",
+                subcategory: "shirts",
+                price: 8.90,
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem de camiseta 100% algodão"
+            },
+            {
+                id: 3,
+                name: "Calça Jeans",
+                category: "clothes",
+                subcategory: "pants",
+                price: 15.90,
+                image: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem especial para calça jeans"
+            },
+            {
+                id: 4,
+                name: "Lençol Casal",
+                category: "bed",
+                subcategory: "sheets",
+                price: 25.90,
+                image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem e passagem de lençol casal"
+            },
+            {
+                id: 5,
+                name: "Toalha de Banho",
+                category: "bath",
+                subcategory: "towels",
+                price: 10.90,
+                image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem de toalha de banho"
+            },
+            {
+                id: 6,
+                name: "Toalha de Mesa",
+                category: "table",
+                subcategory: "tablecloth",
+                price: 18.90,
+                image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem e passagem de toalha de mesa"
+            },
+            {
+                id: 7,
+                name: "Camisa Polo",
+                category: "clothes",
+                subcategory: "shirts",
+                price: 11.90,
+                image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem de camisa polo"
+            },
+            {
+                id: 8,
+                name: "Cobertor",
+                category: "bed",
+                subcategory: "sheets",
+                price: 35.90,
+                image: "https://images.unsplash.com/photo-1594179047819-82c2bc9d0b81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem especial para cobertores"
+            },
+            {
+                id: 9,
+                name: "Roupão",
+                category: "bath",
+                subcategory: "towels",
+                price: 22.90,
+                image: "https://images.unsplash.com/photo-1595341595379-cf0f2a283f1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                description: "Lavagem de roupão de banho"
+            }
+        ];
+
+        // Shopping cart
+        let cart = [];
+        let currentCategory = 'all';
+        let currentSubcategory = 'all';
+
+        // DOM Elements
+        const itemsGrid = document.getElementById('items-grid');
+        const cartCount = document.getElementById('cart-count');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const totalPrice = document.getElementById('total-price');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartDropdown = document.getElementById('cart-dropdown');
+
+        // Initialize the app
+        function init() {
+            renderItems();
+            setupEventListeners();
+        }
+
+        // Render laundry items based on filters
+        function renderItems() {
+            itemsGrid.innerHTML = '';
+            
+            const filteredItems = laundryItems.filter(item => {
+                const categoryMatch = currentCategory === 'all' || item.category === currentCategory;
+                const subcategoryMatch = currentSubcategory === 'all' || item.subcategory === currentSubcategory;
+                return categoryMatch && subcategoryMatch;
+            });
+            
+            if (filteredItems.length === 0) {
+                itemsGrid.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">Nenhum item encontrado nesta categoria</p>';
+                return;
+            }
+            
+            filteredItems.forEach(item => {
+                const cartItem = cart.find(ci => ci.id === item.id);
+                const quantity = cartItem ? cartItem.quantity : 0;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'item-card bg-white rounded-lg shadow overflow-hidden transition duration-300';
+                itemElement.innerHTML = `
+                    <div class="h-48 overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg text-gray-800">${item.name}</h3>
+                            <span class="font-bold text-blue-600">R$ ${item.price.toFixed(2)}</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">${item.description}</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                                <button class="quantity-btn decrease px-3 py-1 bg-gray-100 hover:bg-gray-200" data-id="${item.id}">-</button>
+                                <span class="quantity px-3 py-1">${quantity}</span>
+                                <button class="quantity-btn increase px-3 py-1 bg-gray-100 hover:bg-gray-200" data-id="${item.id}">+</button>
+                            </div>
+                            <button class="add-btn px-4 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition" data-id="${item.id}">
+                                ${quantity > 0 ? 'Atualizar' : 'Adicionar'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                itemsGrid.appendChild(itemElement);
+            });
+        }
+
+        // Update cart UI
+        function updateCart() {
+            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-4">Seu carrinho está vazio</p>';
+                cartTotal.classList.add('hidden');
+                return;
+            }
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                const laundryItem = laundryItems.find(li => li.id === item.id);
+                total += laundryItem.price * item.quantity;
+                
+                const cartItemElement = document.createElement('div');
+                cartItemElement.className = 'cart-item flex justify-between items-center py-2 px-1 border-b border-gray-100';
+                cartItemElement.innerHTML = `
+                    <div class="flex items-center">
+                        <img src="${laundryItem.image}" alt="${laundryItem.name}" class="w-10 h-10 object-cover rounded mr-3">
+                        <div>
+                            <h4 class="font-medium text-gray-800">${laundryItem.name}</h4>
+                            <p class="text-sm text-gray-500">R$ ${laundryItem.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <button class="cart-decrease px-2 py-1 text-gray-500 hover:text-blue-600" data-id="${item.id}">
+                            <i class="fas fa-minus text-xs"></i>
+                        </button>
+                        <span class="mx-2">${item.quantity}</span>
+                        <button class="cart-increase px-2 py-1 text-gray-500 hover:text-blue-600" data-id="${item.id}">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                        <button class="cart-remove ml-3 text-red-500 hover:text-red-700" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItemElement);
+            });
+            
+            totalPrice.textContent = `R$ ${total.toFixed(2)}`;
+            cartTotal.classList.remove('hidden');
+        }
+
+        // Add item to cart
+        function addToCart(itemId, quantity) {
+            const existingItem = cart.find(item => item.id === itemId);
+            
+            if (existingItem) {
+                existingItem.quantity = quantity;
+            } else {
+                cart.push({ id: itemId, quantity });
+            }
+            
+            // Remove items with quantity 0
+            cart = cart.filter(item => item.quantity > 0);
+            
+            updateCart();
+            renderItems();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    renderItems();
+                });
+            });
+            
+            // Subcategory buttons
+            document.querySelectorAll('.subcategory-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.subcategory-btn').forEach(b => {
+                        b.classList.remove('bg-blue-100', 'text-blue-800');
+                        b.classList.add('bg-gray-100', 'text-gray-800');
+                    });
+                    btn.classList.remove('bg-gray-100', 'text-gray-800');
+                    btn.classList.add('bg-blue-100', 'text-blue-800');
+                    currentSubcategory = btn.dataset.subcategory;
+                    renderItems();
+                });
+            });
+            
+            // Cart button
+            cartBtn.addEventListener('click', () => {
+                cartDropdown.classList.toggle('hidden');
+            });
+            
+            // Close cart dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!cartBtn.contains(e.target) && !cartDropdown.contains(e.target)) {
+                    cartDropdown.classList.add('hidden');
+                }
+            });
+            
+            // Delegate events for dynamically created elements
+            itemsGrid.addEventListener('click', (e) => {
+                // Quantity buttons
+                if (e.target.classList.contains('quantity-btn')) {
+                    const itemId = parseInt(e.target.dataset.id);
+                    const quantityElement = e.target.closest('.flex').querySelector('.quantity');
+                    let quantity = parseInt(quantityElement.textContent);
+                    
+                    if (e.target.classList.contains('decrease')) {
+                        quantity = Math.max(0, quantity - 1);
+                    } else if (e.target.classList.contains('increase')) {
+                        quantity += 1;
+                    }
+                    
+                    quantityElement.textContent = quantity;
+                    
+                    // Update add button text
+                    const addBtn = e.target.closest('.flex').querySelector('.add-btn');
+                    addBtn.textContent = quantity > 0 ? 'Atualizar' : 'Adicionar';
+                }
+                
+                // Add to cart button
+                if (e.target.classList.contains('add-btn')) {
+                    const itemId = parseInt(e.target.dataset.id);
+                    const quantity = parseInt(e.target.closest('.flex').querySelector('.quantity').textContent);
+                    addToCart(itemId, quantity);
+                }
+            });
+            
+            // Cart item buttons
+            cartItems.addEventListener('click', (e) => {
+                if (e.target.classList.contains('cart-decrease') || e.target.closest('.cart-decrease')) {
+                    const itemId = parseInt(e.target.closest('button').dataset.id);
+                    const item = cart.find(item => item.id === itemId);
+                    if (item) {
+                        addToCart(itemId, item.quantity - 1);
+                    }
+                }
+                
+                if (e.target.classList.contains('cart-increase') || e.target.closest('.cart-increase')) {
+                    const itemId = parseInt(e.target.closest('button').dataset.id);
+                    const item = cart.find(item => item.id === itemId);
+                    if (item) {
+                        addToCart(itemId, item.quantity + 1);
+                    }
+                }
+                
+                if (e.target.classList.contains('cart-remove') || e.target.closest('.cart-remove')) {
+                    const itemId = parseInt(e.target.closest('button').dataset.id);
+                    addToCart(itemId, 0);
+                }
+            });
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
